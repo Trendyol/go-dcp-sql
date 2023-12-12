@@ -1,1 +1,1 @@
-# go-dcp-postgresql
+# go-dcp-sql
