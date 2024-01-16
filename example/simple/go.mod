@@ -1,14 +1,13 @@
-module github.com/Trendyol/go-dcp-sql
+module example
 
 go 1.21
 
-require (
-	github.com/Trendyol/go-dcp v1.1.19
-	github.com/sirupsen/logrus v1.9.3
-	gopkg.in/yaml.v3 v3.0.1
-)
+replace github.com/Trendyol/go-dcp-sql => ./../..
+
+require github.com/Trendyol/go-dcp-sql v0.0.0
 
 require (
+	github.com/Trendyol/go-dcp v1.1.19 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/ansrivas/fiberprometheus/v2 v2.6.1 // indirect
 	github.com/asaskevich/EventBus v0.0.0-20200907212545-49d423059eef // indirect
@@ -46,6 +45,7 @@ require (
 	github.com/prometheus/common v0.44.0 // indirect
 	github.com/prometheus/procfs v0.11.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.50.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
@@ -60,6 +60,7 @@ require (
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/api v0.29.0 // indirect
 	k8s.io/apimachinery v0.29.0 // indirect
 	k8s.io/client-go v0.29.0 // indirect

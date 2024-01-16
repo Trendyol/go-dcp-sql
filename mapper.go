@@ -40,3 +40,8 @@ type SqlModel struct {
 func (u *SqlModel) ConvertSql() string {
 	return u.Query
 }
+
+func DefaultMapper(event couchbase.Event) []Model {
+	//TODO
+	return nil
+}
