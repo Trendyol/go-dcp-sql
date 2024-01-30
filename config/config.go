@@ -4,19 +4,23 @@ import (
 	"github.com/Trendyol/go-dcp/config"
 )
 
-type DB struct {
-	//TODO string or []string?
+type Sql struct {
 	Host       string `yaml:"host"`
 	User       string `yaml:"user"`
 	Password   string `yaml:"password"`
-	DriverName string `yaml:"driverName"`
+	DbName     string `yaml:"dbName"`
 	Port       uint16 `yaml:"port"`
+	SslMode    string `yaml:"sslMode"`
+	DriverName string `yaml:"driverName"`
 }
 
 type Connector struct {
-	DB  DB         `yaml:"db" mapstructure:"db"`
+	Sql Sql        `yaml:"sql" mapstructure:"sql"`
 	Dcp config.Dcp `yaml:",inline" mapstructure:",squash"`
 }
 
 func (c *Connector) ApplyDefaults() {
+	if c.Sql.SslMode == "" {
+		c.Sql.SslMode = "disable"
+	}
 }

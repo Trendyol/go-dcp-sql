@@ -1,14 +1,22 @@
 package main
 
 import (
+	"fmt"
 	sql "github.com/Trendyol/go-dcp-sql"
 	"github.com/Trendyol/go-dcp-sql/couchbase"
+	_ "github.com/lib/pq"
 )
 
 func mapper(event couchbase.Event) []sql.Model {
-	var result []sql.Model
-	//TODO User should handle events and create related sql.Model model array includes SQL DML queries.
-	return result
+	var model = sql.SqlModel{
+		Query: fmt.Sprintf(
+			"INSERT INTO `example-schema`.`example-table` (key, value) VALUES ('%s', '%s')",
+			string(event.Key),
+			string(event.Value),
+		),
+	}
+
+	return []sql.Model{&model}
 }
 
 func main() {

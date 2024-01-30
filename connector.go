@@ -1,7 +1,9 @@
 package dcpsql
 
 import (
+	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/Trendyol/go-dcp"
 	"github.com/Trendyol/go-dcp-sql/config"
 	"github.com/Trendyol/go-dcp-sql/couchbase"
@@ -21,6 +23,7 @@ type connector struct {
 	dcp    dcp.Dcp
 	mapper Mapper
 	config *config.Connector
+	db     *sql.DB
 }
 
 func (c *connector) Start() {
@@ -47,9 +50,27 @@ func (c *connector) listener(ctx *models.ListenerContext) {
 		return
 	}
 
-	_ = c.mapper(e)
-	// TODO: How could we apply this model to our SQ
+	actions := c.mapper(e)
 
+	if len(actions) == 0 {
+		ctx.Ack()
+		return
+	}
+
+	for _, action := range actions {
+		var query = action.ConvertSql()
+		result, err := c.db.Exec(query)
+		if err != nil {
+			panic(err)
+		} else {
+			affected, err := result.RowsAffected()
+			if err != nil {
+				panic(err)
+			} else {
+				logger.Log.Info("affected = %v", affected)
+			}
+		}
+	}
 }
 
 type ConnectorBuilder struct {
@@ -106,6 +127,23 @@ func newConnector(cf any, mapper Mapper) (Connector, error) {
 
 	connector.dcp = dcp
 
+	var driverExist = false
+	for _, driver := range sql.Drivers() {
+		if driver == cfg.Sql.DriverName {
+			driverExist = true
+			break
+		}
+	}
+
+	if !driverExist {
+		panic(fmt.Errorf("driver: %s not found", cfg.Sql.DriverName))
+	}
+
+	dataSourceName := fmt.Sprintf(
+		"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+		cfg.Sql.Host, cfg.Sql.Port, cfg.Sql.User, cfg.Sql.Password, cfg.Sql.DbName, cfg.Sql.SslMode,
+	)
+	connector.db, err = sql.Open(cfg.Sql.DriverName, dataSourceName)
 	if err != nil {
 		return nil, err
 	}

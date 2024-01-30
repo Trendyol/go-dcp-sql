@@ -42,6 +42,5 @@ func (u *SqlModel) ConvertSql() string {
 }
 
 func DefaultMapper(event couchbase.Event) []Model {
-	//TODO
 	return nil
 }

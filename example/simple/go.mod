@@ -4,10 +4,13 @@ go 1.21
 
 replace github.com/Trendyol/go-dcp-sql => ./../..
 
-require github.com/Trendyol/go-dcp-sql v0.0.0
+require (
+	github.com/Trendyol/go-dcp-sql v0.0.0
+	github.com/lib/pq v1.10.9
+)
 
 require (
-	github.com/Trendyol/go-dcp v1.1.19 // indirect
+	github.com/Trendyol/go-dcp v1.1.22 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/ansrivas/fiberprometheus/v2 v2.6.1 // indirect
 	github.com/asaskevich/EventBus v0.0.0-20200907212545-49d423059eef // indirect
