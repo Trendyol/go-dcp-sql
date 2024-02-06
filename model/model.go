@@ -1,0 +1,38 @@
+package model
+
+type DcpSqlItem interface {
+	ConvertSql() string
+}
+
+//type UpsertModel struct {
+//	Table string
+//	Data  map[string]any
+//}
+//
+//func (u *UpsertModel) ConvertSql() string {
+//	a := "INSERT INTO"
+//	for k, v := range u.Data {
+//
+//	}
+//
+//	// TODO
+//	return "INSERT INTO"
+//}
+//
+//type DeleteModel struct {
+//	Table string
+//	Data  map[string]any
+//}
+//
+//func (u *DeleteModel) ConvertSql() string {
+//	// TODO
+//	return "DELETE ..."
+//}
+
+type SqlModel struct {
+	Query string
+}
+
+func (u *SqlModel) ConvertSql() string {
+	return u.Query
+}

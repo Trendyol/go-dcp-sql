@@ -5,13 +5,14 @@ import (
 )
 
 type Sql struct {
-	Host       string `yaml:"host"`
-	User       string `yaml:"user"`
-	Password   string `yaml:"password"`
-	DbName     string `yaml:"dbName"`
-	Port       uint16 `yaml:"port"`
-	SslMode    string `yaml:"sslMode"`
-	DriverName string `yaml:"driverName"`
+	Host           string `yaml:"host"`
+	User           string `yaml:"user"`
+	Password       string `yaml:"password"`
+	DbName         string `yaml:"dbName"`
+	Port           uint16 `yaml:"port"`
+	SslMode        string `yaml:"sslMode"`
+	DriverName     string `yaml:"driverName"`
+	BatchSizeLimit int    `yaml:"batchSizeLimit"`
 }
 
 type Connector struct {
