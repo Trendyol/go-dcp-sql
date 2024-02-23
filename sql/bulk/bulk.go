@@ -1,9 +1,9 @@
 package bulk
 
 import (
-	"database/sql"
+	rawSql "database/sql"
 	"github.com/Trendyol/go-dcp-sql/config"
-	"github.com/Trendyol/go-dcp-sql/model"
+	"github.com/Trendyol/go-dcp-sql/sql"
 	"github.com/Trendyol/go-dcp-sql/sql/client"
 	"github.com/Trendyol/go-dcp/logger"
 	"github.com/Trendyol/go-dcp/models"
@@ -11,8 +11,8 @@ import (
 )
 
 type Bulk struct {
-	sqlClient           *sql.DB
-	batch               []model.DcpSqlItem
+	sqlClient           *rawSql.DB
+	batch               []sql.Model
 	flushLock           sync.Mutex
 	isDcpRebalancing    bool
 	dcpCheckpointCommit func()
@@ -30,14 +30,14 @@ func NewBulk(
 
 	b := Bulk{
 		sqlClient:           c,
-		batch:               make([]model.DcpSqlItem, 0, cfg.Sql.BatchSizeLimit),
+		batch:               make([]sql.Model, 0, cfg.Sql.BatchSizeLimit),
 		dcpCheckpointCommit: dcpCheckpointCommit,
 		batchSizeLimit:      cfg.Sql.BatchSizeLimit,
 	}
 	return &b, nil
 }
 
-func (b *Bulk) AddActions(ctx *models.ListenerContext, actions []model.DcpSqlItem) {
+func (b *Bulk) AddActions(ctx *models.ListenerContext, actions []sql.Model) {
 	b.flushLock.Lock()
 	if b.isDcpRebalancing {
 		logger.Log.Warn("could not add new message to batch while rebalancing")
@@ -64,7 +64,7 @@ func (b *Bulk) flushBatch() {
 		return
 	}
 	for _, model := range b.batch {
-		result, err := b.sqlClient.Exec(model.ConvertSql())
+		result, err := b.sqlClient.Exec(model.Convert())
 		if err != nil {
 			panic(err)
 		} else {

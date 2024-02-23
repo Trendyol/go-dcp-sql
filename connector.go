@@ -8,8 +8,8 @@ import (
 	"github.com/Trendyol/go-dcp-sql/sql/bulk"
 	"github.com/Trendyol/go-dcp/logger"
 	"github.com/Trendyol/go-dcp/models"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
-	"log/slog"
 	"os"
 )
 
@@ -141,7 +141,9 @@ func (c ConnectorBuilder) Build() (Connector, error) {
 	return newConnector(c.config, c.mapper)
 }
 
-func (c ConnectorBuilder) SetLogger(l slog.Logger) ConnectorBuilder {
-	//TODO slog should be the logger
+func (c ConnectorBuilder) SetLogger(logrus *logrus.Logger) ConnectorBuilder {
+	logger.Log = &logger.Loggers{
+		Logrus: logrus,
+	}
 	return c
 }

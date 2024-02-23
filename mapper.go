@@ -2,11 +2,11 @@ package dcpsql
 
 import (
 	"github.com/Trendyol/go-dcp-sql/couchbase"
-	"github.com/Trendyol/go-dcp-sql/model"
+	"github.com/Trendyol/go-dcp-sql/sql"
 )
 
-type Mapper func(event couchbase.Event) []model.DcpSqlItem
+type Mapper func(event couchbase.Event) []sql.Model
 
-func DefaultMapper(event couchbase.Event) []model.DcpSqlItem {
+func DefaultMapper(event couchbase.Event) []sql.Model {
 	return nil
 }

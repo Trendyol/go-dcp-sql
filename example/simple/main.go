@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	sql "github.com/Trendyol/go-dcp-sql"
+	"github.com/Trendyol/go-dcp-sql"
 	"github.com/Trendyol/go-dcp-sql/couchbase"
+	"github.com/Trendyol/go-dcp-sql/sql"
 	_ "github.com/lib/pq"
 )
 
 func mapper(event couchbase.Event) []sql.Model {
-	var model = sql.SqlModel{
+	var raw = sql.Raw{
 		Query: fmt.Sprintf(
 			"INSERT INTO `example-schema`.`example-table` (key, value) VALUES ('%s', '%s')",
 			string(event.Key),
@@ -16,11 +17,11 @@ func mapper(event couchbase.Event) []sql.Model {
 		),
 	}
 
-	return []sql.Model{&model}
+	return []sql.Model{&raw}
 }
 
 func main() {
-	connector, err := sql.NewConnectorBuilder("config.yml").
+	connector, err := dcpsql.NewConnectorBuilder("config.yml").
 		SetMapper(mapper).
 		Build()
 	if err != nil {

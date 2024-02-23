@@ -3,7 +3,8 @@ module github.com/Trendyol/go-dcp-sql
 go 1.20
 
 require (
-	github.com/Trendyol/go-dcp v1.1.24
+	github.com/Trendyol/go-dcp v1.1.26
+	github.com/sirupsen/logrus v1.9.3
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -44,7 +45,6 @@ require (
 	github.com/prometheus/common v0.46.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/rivo/uniseg v0.4.6 // indirect
-	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.52.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
