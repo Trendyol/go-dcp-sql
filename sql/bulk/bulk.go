@@ -2,12 +2,14 @@ package bulk
 
 import (
 	rawSql "database/sql"
+	"sync"
+	"time"
+
 	"github.com/Trendyol/go-dcp-sql/config"
 	"github.com/Trendyol/go-dcp-sql/sql"
 	"github.com/Trendyol/go-dcp-sql/sql/client"
 	"github.com/Trendyol/go-dcp/logger"
 	"github.com/Trendyol/go-dcp/models"
-	"sync"
 )
 
 type Bulk struct {
@@ -17,24 +19,40 @@ type Bulk struct {
 	isDcpRebalancing    bool
 	dcpCheckpointCommit func()
 	batchSizeLimit      int
+	batchTicker         *time.Ticker
+	batchTickerDuration time.Duration
 }
 
 func NewBulk(
 	cfg *config.Connector,
 	dcpCheckpointCommit func(),
 ) (*Bulk, error) {
-	c, err := client.NewSqlClient(cfg.Sql)
+	c, err := client.NewSQLClient(cfg.SQL)
 	if err != nil {
 		return nil, err
 	}
 
 	b := Bulk{
 		sqlClient:           c,
-		batch:               make([]sql.Model, 0, cfg.Sql.BatchSizeLimit),
+		batch:               make([]sql.Model, 0, cfg.SQL.BatchSizeLimit),
 		dcpCheckpointCommit: dcpCheckpointCommit,
-		batchSizeLimit:      cfg.Sql.BatchSizeLimit,
+		batchSizeLimit:      cfg.SQL.BatchSizeLimit,
+		batchTickerDuration: cfg.SQL.BatchTickerDuration,
+		batchTicker:         time.NewTicker(cfg.SQL.BatchTickerDuration),
 	}
 	return &b, nil
+}
+
+func (b *Bulk) StartBulk() {
+	for range b.batchTicker.C {
+		b.flushBatch()
+	}
+}
+
+func (b *Bulk) Close() {
+	b.batchTicker.Stop()
+
+	b.flushBatch()
 }
 
 func (b *Bulk) AddActions(ctx *models.ListenerContext, actions []sql.Model) {
@@ -45,9 +63,8 @@ func (b *Bulk) AddActions(ctx *models.ListenerContext, actions []sql.Model) {
 		return
 	}
 
-	for _, action := range actions {
-		b.batch = append(b.batch, action)
-	}
+	b.batch = append(b.batch, actions...)
+
 	ctx.Ack()
 
 	b.flushLock.Unlock()
@@ -76,6 +93,7 @@ func (b *Bulk) flushBatch() {
 			}
 		}
 	}
+	b.batchTicker.Reset(b.batchTickerDuration)
 	b.batch = b.batch[:0]
 	b.dcpCheckpointCommit()
 }

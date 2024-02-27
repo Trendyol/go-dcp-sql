@@ -2,6 +2,8 @@ package dcpsql
 
 import (
 	"errors"
+	"os"
+
 	"github.com/Trendyol/go-dcp"
 	"github.com/Trendyol/go-dcp-sql/config"
 	"github.com/Trendyol/go-dcp-sql/couchbase"
@@ -10,7 +12,6 @@ import (
 	"github.com/Trendyol/go-dcp/models"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
-	"os"
 )
 
 type Connector interface {
@@ -28,12 +29,14 @@ type connector struct {
 func (c *connector) Start() {
 	go func() {
 		<-c.dcp.WaitUntilReady()
+		c.bulk.StartBulk()
 	}()
 	c.dcp.Start()
 }
 
 func (c *connector) Close() {
 	c.dcp.Close()
+	c.bulk.Close()
 }
 
 func (c *connector) listener(ctx *models.ListenerContext) {
