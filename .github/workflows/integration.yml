@@ -25,7 +25,9 @@ jobs:
         run: make compose
 
       - name: Integration Test
-        run: go test -v test/integration/integration_test.go
+        run: |
+          cd test/integration
+          go test -v .
         env:
           INPUT_PUBLISH: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
