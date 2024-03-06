@@ -1,13 +1,13 @@
-module example
+module integration-test-example
 
 go 1.21
 
 toolchain go1.22.0
 
-replace github.com/Trendyol/go-dcp-sql => ./../..
+replace github.com/Trendyol/go-dcp-sql => ../../.
 
 require (
-	github.com/Trendyol/go-dcp-sql v0.0.0
+	github.com/Trendyol/go-dcp-sql v0.0.0-00010101000000-000000000000
 	github.com/lib/pq v1.10.9
 )
 

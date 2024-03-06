@@ -14,13 +14,13 @@ import (
 
 type Bulk struct {
 	sqlClient           *rawSql.DB
+	dcpCheckpointCommit func()
+	batchTicker         *time.Ticker
 	batch               []sql.Model
+	batchSizeLimit      int
+	batchTickerDuration time.Duration
 	flushLock           sync.Mutex
 	isDcpRebalancing    bool
-	dcpCheckpointCommit func()
-	batchSizeLimit      int
-	batchTicker         *time.Ticker
-	batchTickerDuration time.Duration
 }
 
 func NewBulk(
