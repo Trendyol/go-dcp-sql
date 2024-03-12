@@ -2,6 +2,8 @@ package bulk
 
 import (
 	rawSql "database/sql"
+	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -80,8 +82,11 @@ func (b *Bulk) flushBatch() {
 	if b.isDcpRebalancing {
 		return
 	}
-	for _, model := range b.batch {
-		result, err := b.sqlClient.Exec(model.Convert())
+
+	queries := prepareBulkSQLQueries(b.batch)
+
+	for _, query := range queries {
+		result, err := b.sqlClient.Exec(query)
 		if err != nil {
 			panic(err)
 		} else {
@@ -96,6 +101,41 @@ func (b *Bulk) flushBatch() {
 	b.batchTicker.Reset(b.batchTickerDuration)
 	b.batch = b.batch[:0]
 	b.dcpCheckpointCommit()
+}
+
+func prepareBulkSQLQueries(batch []sql.Model) []string {
+	queries := make([]string, 0)
+
+	insertQueries := make(map[string][]string)
+	for _, model := range batch {
+		query := model.Convert()
+
+		if !strings.HasPrefix(query, "INSERT INTO") {
+			queries = append(queries, query)
+			continue
+		}
+
+		prepareInsertQueries(query, insertQueries)
+	}
+
+	for prefix, data := range insertQueries {
+		queries = append(queries, fmt.Sprintf("%s %s", prefix, strings.Join(data, ",")))
+	}
+
+	return queries
+}
+
+func prepareInsertQueries(query string, insertQueries map[string][]string) {
+	s := strings.Split(query, "VALUES")
+	prefix := s[0] + " VALUES"
+	data := s[1]
+
+	exist, ok := insertQueries[prefix]
+	if !ok {
+		insertQueries[prefix] = []string{data}
+	} else {
+		insertQueries[prefix] = append(exist, data)
+	}
 }
 
 func (b *Bulk) PrepareStartRebalancing() {
