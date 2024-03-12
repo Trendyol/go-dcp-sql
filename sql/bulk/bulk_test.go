@@ -1,9 +1,10 @@
 package bulk
 
 import (
+	"testing"
+
 	"github.com/Trendyol/go-dcp-sql/sql"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestPrepareBulkSQLQueries(t *testing.T) {
