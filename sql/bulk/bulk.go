@@ -57,7 +57,7 @@ func (b *Bulk) Close() {
 	b.flushBatch()
 }
 
-func (b *Bulk) AddActions(ctx *models.ListenerContext, actions []sql.Model) {
+func (b *Bulk) AddActions(ctx *models.ListenerContext, actions []sql.Model, isLastChunk bool) {
 	b.flushLock.Lock()
 	if b.isDcpRebalancing {
 		logger.Log.Warn("could not add new message to batch while rebalancing")
@@ -67,7 +67,9 @@ func (b *Bulk) AddActions(ctx *models.ListenerContext, actions []sql.Model) {
 
 	b.batch = append(b.batch, actions...)
 
-	ctx.Ack()
+	if isLastChunk {
+		ctx.Ack()
+	}
 
 	b.flushLock.Unlock()
 

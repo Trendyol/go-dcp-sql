@@ -1,9 +1,9 @@
 module github.com/Trendyol/go-dcp-sql
 
-go 1.21
+go 1.20
 
 require (
-	github.com/Trendyol/go-dcp v1.1.30
+	github.com/Trendyol/go-dcp v1.1.32
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.4
 	gopkg.in/yaml.v3 v3.0.1

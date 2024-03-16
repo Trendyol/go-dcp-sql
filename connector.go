@@ -4,6 +4,9 @@ import (
 	"errors"
 	"os"
 
+	"github.com/Trendyol/go-dcp-sql/sql"
+	"github.com/Trendyol/go-dcp/helpers"
+
 	"github.com/Trendyol/go-dcp"
 	"github.com/Trendyol/go-dcp-sql/config"
 	"github.com/Trendyol/go-dcp-sql/couchbase"
@@ -58,7 +61,17 @@ func (c *connector) listener(ctx *models.ListenerContext) {
 		ctx.Ack()
 		return
 	}
-	c.bulk.AddActions(ctx, actions)
+
+	batchSizeLimit := c.config.SQL.BatchSizeLimit
+	if len(actions) > batchSizeLimit {
+		chunks := helpers.ChunkSliceWithSize[sql.Model](actions, batchSizeLimit)
+		lastChunkIndex := len(chunks) - 1
+		for idx, chunk := range chunks {
+			c.bulk.AddActions(ctx, chunk, idx == lastChunkIndex)
+		}
+	} else {
+		c.bulk.AddActions(ctx, actions, true)
+	}
 }
 
 type ConnectorBuilder struct {

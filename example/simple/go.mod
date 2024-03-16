@@ -1,6 +1,6 @@
 module example
 
-go 1.21
+go 1.20
 
 replace github.com/Trendyol/go-dcp-sql => ./../..
 
@@ -10,7 +10,7 @@ require (
 )
 
 require (
-	github.com/Trendyol/go-dcp v1.1.30 // indirect
+	github.com/Trendyol/go-dcp v1.1.32 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/ansrivas/fiberprometheus/v2 v2.6.1 // indirect
 	github.com/asaskevich/EventBus v0.0.0-20200907212545-49d423059eef // indirect
