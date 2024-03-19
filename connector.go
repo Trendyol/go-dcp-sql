@@ -128,9 +128,6 @@ func newConnector(cf any, mapper Mapper) (Connector, error) {
 	dcpConfig := dcp.GetConfig()
 	dcpConfig.Checkpoint.Type = "manual"
 
-	metricCollector := metric.NewMetricCollector(connector.bulk)
-	dcp.SetMetricCollectors(metricCollector)
-
 	connector.dcp = dcp
 
 	connector.bulk, err = bulk.NewBulk(cfg, dcp.Commit)
@@ -142,6 +139,9 @@ func newConnector(cf any, mapper Mapper) (Connector, error) {
 		&DcpEventHandler{
 			bulk: connector.bulk,
 		})
+
+	metricCollector := metric.NewMetricCollector(connector.bulk)
+	dcp.SetMetricCollectors(metricCollector)
 
 	return connector, nil
 }
