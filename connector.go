@@ -2,8 +2,9 @@ package dcpsql
 
 import (
 	"errors"
-	"github.com/Trendyol/go-dcp-sql/metric"
 	"os"
+
+	"github.com/Trendyol/go-dcp-sql/metric"
 
 	"github.com/Trendyol/go-dcp-sql/sql"
 	"github.com/Trendyol/go-dcp/helpers"
