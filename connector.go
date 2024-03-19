@@ -2,6 +2,7 @@ package dcpsql
 
 import (
 	"errors"
+	"github.com/Trendyol/go-dcp-sql/metric"
 	"os"
 
 	"github.com/Trendyol/go-dcp"
@@ -58,7 +59,7 @@ func (c *connector) listener(ctx *models.ListenerContext) {
 		ctx.Ack()
 		return
 	}
-	c.bulk.AddActions(ctx, actions)
+	c.bulk.AddActions(ctx, e.EventTime, actions)
 }
 
 type ConnectorBuilder struct {
@@ -112,6 +113,9 @@ func newConnector(cf any, mapper Mapper) (Connector, error) {
 
 	dcpConfig := dcp.GetConfig()
 	dcpConfig.Checkpoint.Type = "manual"
+
+	metricCollector := metric.NewMetricCollector(connector.bulk)
+	dcp.SetMetricCollectors(metricCollector)
 
 	connector.dcp = dcp
 

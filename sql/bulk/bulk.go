@@ -18,6 +18,7 @@ type Bulk struct {
 	sqlClient           *rawSql.DB
 	dcpCheckpointCommit func()
 	batchTicker         *time.Ticker
+	metric              *Metric
 	batch               []sql.Model
 	batchSizeLimit      int
 	batchTickerDuration time.Duration
@@ -45,6 +46,15 @@ func NewBulk(
 	return &b, nil
 }
 
+type Metric struct {
+	ProcessLatencyMs            int64
+	BulkRequestProcessLatencyMs int64
+}
+
+func (b *Bulk) GetMetric() *Metric {
+	return b.metric
+}
+
 func (b *Bulk) StartBulk() {
 	for range b.batchTicker.C {
 		b.flushBatch()
@@ -57,7 +67,7 @@ func (b *Bulk) Close() {
 	b.flushBatch()
 }
 
-func (b *Bulk) AddActions(ctx *models.ListenerContext, actions []sql.Model) {
+func (b *Bulk) AddActions(ctx *models.ListenerContext, eventTime time.Time, actions []sql.Model) {
 	b.flushLock.Lock()
 	if b.isDcpRebalancing {
 		logger.Log.Warn("could not add new message to batch while rebalancing")
@@ -70,6 +80,8 @@ func (b *Bulk) AddActions(ctx *models.ListenerContext, actions []sql.Model) {
 	ctx.Ack()
 
 	b.flushLock.Unlock()
+
+	b.metric.ProcessLatencyMs = time.Since(eventTime).Milliseconds()
 
 	if len(b.batch) >= b.batchSizeLimit {
 		b.flushBatch()
@@ -85,6 +97,7 @@ func (b *Bulk) flushBatch() {
 
 	queries := prepareBulkSQLQueries(b.batch)
 
+	startedTime := time.Now()
 	for _, query := range queries {
 		result, err := b.sqlClient.Exec(query)
 		if err != nil {
@@ -98,6 +111,7 @@ func (b *Bulk) flushBatch() {
 			}
 		}
 	}
+	b.metric.BulkRequestProcessLatencyMs = time.Since(startedTime).Milliseconds()
 	b.batchTicker.Reset(b.batchTickerDuration)
 	b.batch = b.batch[:0]
 	b.dcpCheckpointCommit()
