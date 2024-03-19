@@ -42,6 +42,7 @@ func NewBulk(
 		batchSizeLimit:      cfg.SQL.BatchSizeLimit,
 		batchTickerDuration: cfg.SQL.BatchTickerDuration,
 		batchTicker:         time.NewTicker(cfg.SQL.BatchTickerDuration),
+		metric:              &Metric{},
 	}
 	return &b, nil
 }
