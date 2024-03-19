@@ -25,3 +25,4 @@ compose:
 tidy:
 	go mod tidy
 	cd example/simple && go mod tidy && cd ../..
+	cd test/integration && go mod tidy && cd ../..
