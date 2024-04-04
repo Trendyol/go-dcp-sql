@@ -1,9 +1,9 @@
 module github.com/Trendyol/go-dcp-sql
 
-go 1.21
+go 1.20
 
 require (
-	github.com/Trendyol/go-dcp v1.1.37
+	github.com/Trendyol/go-dcp v1.1.40
 	github.com/prometheus/client_golang v1.19.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.4
@@ -16,7 +16,7 @@ require (
 	github.com/asaskevich/EventBus v0.0.0-20200907212545-49d423059eef // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/couchbase/gocbcore/v10 v10.3.2 // indirect
+	github.com/couchbase/gocbcore/v10 v10.4.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/emicklei/go-restful/v3 v3.11.3 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
