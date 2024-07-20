@@ -4,6 +4,8 @@ import (
 	"errors"
 	"os"
 
+	dcpCouchbase "github.com/Trendyol/go-dcp/couchbase"
+
 	"github.com/Trendyol/go-dcp-sql/metric"
 
 	"github.com/Trendyol/go-dcp-sql/sql"
@@ -22,6 +24,7 @@ import (
 type Connector interface {
 	Start()
 	Close()
+	GetDcpClient() dcpCouchbase.Client
 }
 
 type connector struct {
@@ -42,6 +45,10 @@ func (c *connector) Start() {
 func (c *connector) Close() {
 	c.dcp.Close()
 	c.bulk.Close()
+}
+
+func (c *connector) GetDcpClient() dcpCouchbase.Client {
+	return c.dcp.GetClient()
 }
 
 func (c *connector) listener(ctx *models.ListenerContext) {
