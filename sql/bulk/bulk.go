@@ -104,13 +104,15 @@ func (b *Bulk) flushBatch() {
 	for _, query := range queries {
 		result, err := b.sqlClient.Exec(query)
 		if err != nil {
+			logger.Log.Error("error while sql exec, err: %v", err)
 			panic(err)
 		} else {
 			affected, err := result.RowsAffected()
 			if err != nil {
+				logger.Log.Error("error while rows affected, err: %v", err)
 				panic(err)
 			} else {
-				logger.Log.Info("affected = %v", affected)
+				logger.Log.Debug("affected = %v", affected)
 			}
 		}
 	}
