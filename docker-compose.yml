@@ -18,22 +18,6 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=example
     ports:
-      - 5432:5432
-    networks:
-      - postgres-db-network
+      - "5432:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: 'admin@test.com'
-      PGADMIN_DEFAULT_PASSWORD: 'admin'
-    ports:
-      - 16543:80
-
-    networks:
-      - postgres-db-network
-
-networks:
-  postgres-db-network:
-    driver: bridge

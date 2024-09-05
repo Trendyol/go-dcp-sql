@@ -5,29 +5,34 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+    types: [opened, reopened, synchronize]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   integration:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: '1.20'
 
-      - uses: actions/checkout@v3
       - name: Start containers
         run: make compose
 
+      - name: Docker status
+        run: sleep 60 && docker ps -a && docker logs go-dcp-sql-couchbase-1 && docker logs go-dcp-sql-postgres-1
+
       - name: Integration Test
-        run: |
-          cd test/integration
-          go test -v .
+        run: cd test/integration && go test -v integration_test.go
         env:
           INPUT_PUBLISH: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
