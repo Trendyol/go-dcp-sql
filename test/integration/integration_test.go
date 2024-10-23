@@ -9,6 +9,7 @@ import (
 	"github.com/Trendyol/go-dcp-sql/couchbase"
 	"github.com/Trendyol/go-dcp-sql/sql"
 	"github.com/Trendyol/go-dcp-sql/sql/client"
+	"github.com/Trendyol/go-dcp/logger"
 	_ "github.com/lib/pq"
 	"sync"
 	"testing"
@@ -38,8 +39,11 @@ func Mapper(event couchbase.Event) []sql.Model {
 }
 
 func TestSql(t *testing.T) {
+	time.Sleep(time.Minute)
+
 	connector, err := dcpsql.NewConnectorBuilder("config.yml").SetMapper(Mapper).Build()
 	if err != nil {
+		t.Fatal(err)
 		return
 	}
 
@@ -80,6 +84,7 @@ func TestSql(t *testing.T) {
 					t.Fatalf("sql query error %s", err)
 				}
 				if count == 31591 {
+					logger.Log.Info("done")
 					connector.Close()
 					goto CountCheckLoop
 				}
