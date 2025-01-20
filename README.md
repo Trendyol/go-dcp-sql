@@ -1,6 +1,7 @@
 # Go Dcp SQL
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/Trendyol/go-dcp-sql.svg)](https://pkg.go.dev/github.com/Trendyol/go-dcp-sql) [![Go Report Card](https://goreportcard.com/badge/github.com/Trendyol/go-dcp-sql)](https://goreportcard.com/report/github.com/Trendyol/go-dcp-sql)
+[![Go Reference](https://pkg.go.dev/badge/github.com/Trendyol/go-dcp-sql.svg)](https://pkg.go.dev/github.com/Trendyol/go-dcp-sql) [![Go Report Card](https://goreportcard.com/badge/github.com/Trendyol/go-dcp-sql)](https://goreportcard.com/report/github.com/Trendyol/go-dcp-sql) [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Trendyol/go-dcp-sql/badge)](https://scorecard.dev/viewer/?uri=github.com/Trendyol/go-dcp-sql)
+
 
 **Go Dcp SQL** streams documents from Couchbase Database Change Protocol (DCP) and writes to
 SQL tables in near real-time.
