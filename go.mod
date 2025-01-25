@@ -3,7 +3,7 @@ module github.com/Trendyol/go-dcp-sql
 go 1.20
 
 require (
-	github.com/Trendyol/go-dcp v1.2.0
+	github.com/Trendyol/go-dcp v1.2.2
 	github.com/json-iterator/go v1.1.12
 	github.com/prometheus/client_golang v1.20.5
 	github.com/sirupsen/logrus v1.9.3
