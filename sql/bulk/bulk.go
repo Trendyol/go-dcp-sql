@@ -75,17 +75,16 @@ func (b *Bulk) AddActions(ctx *models.ListenerContext, eventTime time.Time, acti
 		b.flushLock.Unlock()
 		return
 	}
-
 	b.batch = append(b.batch, actions...)
-
 	if isLastChunk {
 		ctx.Ack()
 	}
 
 	b.flushLock.Unlock()
 
-	b.metric.ProcessLatencyMs = time.Since(eventTime).Milliseconds()
-
+	if isLastChunk {
+		b.metric.ProcessLatencyMs = time.Since(eventTime).Milliseconds()
+	}
 	if len(b.batch) >= b.batchSizeLimit {
 		b.flushBatch()
 	}
