@@ -5,7 +5,7 @@ go 1.20
 replace github.com/Trendyol/go-dcp-sql => ../../.
 
 require (
-	github.com/Trendyol/go-dcp v1.2.2
+	github.com/Trendyol/go-dcp v1.2.3
 	github.com/Trendyol/go-dcp-sql v0.0.0
 	github.com/lib/pq v1.10.9
 )
