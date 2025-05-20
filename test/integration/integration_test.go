@@ -21,25 +21,24 @@ type AirlineEvent struct {
 }
 
 func Mapper(event couchbase.Event) []sql.Model {
-
 	var airlineEvent AirlineEvent
-
 	err := json.Unmarshal(event.Value, &airlineEvent)
 	if err != nil {
 		panic(err)
 	}
-	var raw = sql.Raw{
+	return []sql.Model{&sql.Raw{
 		Query: fmt.Sprintf(
-			"INSERT INTO example_table (id, name) VALUES ('%s', '%s')",
+			"INSERT INTO example_table (id, name) VALUES ($1, $2);",
+		),
+		Args: []interface{}{
 			string(event.Key),
 			airlineEvent.name,
-		),
-	}
-	return []sql.Model{&raw}
+		},
+	}}
 }
 
 func TestSql(t *testing.T) {
-	time.Sleep(time.Minute)
+	time.Sleep(time.Second * 30)
 
 	connector, err := dcpsql.NewConnectorBuilder("config.yml").SetMapper(Mapper).Build()
 	if err != nil {
