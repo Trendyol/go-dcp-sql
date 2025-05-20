@@ -15,31 +15,36 @@ SQL tables in near real-time.
 
 ## Example
 ```go
+package main
 
 import (
-    _ "github.com/lib/pq" // DON'T FORGET TO ADD THE DRIVER
+  _ "github.com/lib/pq" // DON'T FORGET TO ADD THE DRIVER
 )
+
 func mapper(event couchbase.Event) []sql.Model {
-    var raw = sql.Raw{
-        Query: fmt.Sprintf(
-            "INSERT INTO `example-schema`.`example-table` (key, value) VALUES ('%s', '%s')",
-            string(event.Key),
-            string(event.Value),
-        ),
-    }
-    return []sql.Model{&raw}
+  var raw = sql.Raw{
+    Query: fmt.Sprintf(
+      "INSERT INTO `example-schema`.`example-table` (key, value) VALUES ($1, $2);",
+    ),
+    Args: []interface{}{
+      string(event.Key),
+      string(event.Value),
+    },
+  }
+
+  return []sql.Model{&raw}
 }
 
 func main() {
-    connector, err := dcpsql.NewConnectorBuilder("config.yml").
-    SetMapper(mapper).Build()
-	
-    if err != nil {
-        panic(err)
-    }
-    
-    defer connector.Close()
-    connector.Start()
+  connector, err := dcpsql.NewConnectorBuilder("config.yml").
+    SetMapper(mapper).
+    Build()
+  if err != nil {
+    panic(err)
+  }
+
+  defer connector.Close()
+  connector.Start()
 }
 ```
 

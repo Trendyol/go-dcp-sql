@@ -11,7 +11,7 @@ import (
 func mapper(event couchbase.Event) []sql.Model {
 	var raw = sql.Raw{
 		Query: fmt.Sprintf(
-			"INSERT INTO 'example-schema'.'example-table' (key, value) VALUES ($1, $2);",
+			"INSERT INTO `example-schema`.`example-table` (key, value) VALUES ($1, $2);",
 		),
 		Args: []interface{}{
 			string(event.Key),
