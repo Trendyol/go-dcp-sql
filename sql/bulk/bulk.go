@@ -2,8 +2,6 @@ package bulk
 
 import (
 	rawSql "database/sql"
-	"fmt"
-	"strings"
 	"sync"
 	"time"
 
@@ -19,8 +17,6 @@ type Bulk struct {
 	dcpCheckpointCommit func()
 	batchTicker         *time.Ticker
 	metric              *Metric
-	batch               []sql.Model
-	batchSizeLimit      int
 	batchTickerDuration time.Duration
 	flushLock           sync.Mutex
 	isDcpRebalancing    bool
@@ -37,9 +33,7 @@ func NewBulk(
 
 	b := Bulk{
 		sqlClient:           c,
-		batch:               make([]sql.Model, 0, cfg.SQL.BatchSizeLimit),
 		dcpCheckpointCommit: dcpCheckpointCommit,
-		batchSizeLimit:      cfg.SQL.BatchSizeLimit,
 		batchTickerDuration: cfg.SQL.BatchTickerDuration,
 		batchTicker:         time.NewTicker(cfg.SQL.BatchTickerDuration),
 		metric:              &Metric{},
@@ -58,102 +52,50 @@ func (b *Bulk) GetMetric() *Metric {
 
 func (b *Bulk) StartBulk() {
 	for range b.batchTicker.C {
-		b.flushBatch()
+		b.dcpCheckpointCommit()
 	}
 }
 
 func (b *Bulk) Close() {
 	b.batchTicker.Stop()
-
-	b.flushBatch()
 }
 
-func (b *Bulk) AddActions(ctx *models.ListenerContext, eventTime time.Time, actions []sql.Model, isLastChunk bool) {
+func (b *Bulk) AddActions(ctx *models.ListenerContext, eventTime time.Time, actions []sql.Model) {
 	b.flushLock.Lock()
 	if b.isDcpRebalancing {
 		logger.Log.Warn("could not add new message to batch while rebalancing")
 		b.flushLock.Unlock()
 		return
 	}
-	b.batch = append(b.batch, actions...)
-	if isLastChunk {
-		ctx.Ack()
-	}
-
 	b.flushLock.Unlock()
-
-	if isLastChunk {
-		b.metric.ProcessLatencyMs = time.Since(eventTime).Milliseconds()
-	}
-	if len(b.batch) >= b.batchSizeLimit {
-		b.flushBatch()
-	}
+	b.metric.ProcessLatencyMs = time.Since(eventTime).Milliseconds()
+	b.flush(ctx, actions)
 }
 
-func (b *Bulk) flushBatch() {
+func (b *Bulk) flush(ctx *models.ListenerContext, models []sql.Model) {
 	b.flushLock.Lock()
 	defer b.flushLock.Unlock()
 	if b.isDcpRebalancing {
 		return
 	}
 
-	queries := prepareBulkSQLQueries(b.batch)
-
 	startedTime := time.Now()
-	for _, query := range queries {
-		result, err := b.sqlClient.Exec(query)
+	for _, model := range models {
+		query := model.Convert()
+		result, err := b.sqlClient.Exec(query.Query, query.Args...)
 		if err != nil {
 			logger.Log.Error("error while sql exec, err: %v", err)
 			panic(err)
 		} else {
-			affected, err := result.RowsAffected()
+			_, err = result.RowsAffected()
 			if err != nil {
 				logger.Log.Error("error while rows affected, err: %v", err)
 				panic(err)
-			} else {
-				logger.Log.Debug("affected = %v", affected)
 			}
 		}
 	}
 	b.metric.BulkRequestProcessLatencyMs = time.Since(startedTime).Milliseconds()
-	b.batchTicker.Reset(b.batchTickerDuration)
-	b.batch = b.batch[:0]
-	b.dcpCheckpointCommit()
-}
-
-func prepareBulkSQLQueries(batch []sql.Model) []string {
-	queries := make([]string, 0)
-
-	insertQueries := make(map[string][]string)
-	for _, model := range batch {
-		query := model.Convert()
-
-		if !strings.HasPrefix(query, "INSERT INTO") {
-			queries = append(queries, query)
-			continue
-		}
-
-		prepareInsertQueries(query, insertQueries)
-	}
-
-	for prefix, data := range insertQueries {
-		queries = append(queries, fmt.Sprintf("%s %s", prefix, strings.Join(data, ",")))
-	}
-
-	return queries
-}
-
-func prepareInsertQueries(query string, insertQueries map[string][]string) {
-	s := strings.Split(query, "VALUES")
-	prefix := s[0] + " VALUES"
-	data := s[1]
-
-	exist, ok := insertQueries[prefix]
-	if !ok {
-		insertQueries[prefix] = []string{data}
-	} else {
-		insertQueries[prefix] = append(exist, data)
-	}
+	ctx.Ack()
 }
 
 func (b *Bulk) PrepareStartRebalancing() {
@@ -161,7 +103,6 @@ func (b *Bulk) PrepareStartRebalancing() {
 	defer b.flushLock.Unlock()
 
 	b.isDcpRebalancing = true
-	b.batch = b.batch[:0]
 }
 
 func (b *Bulk) PrepareEndRebalancing() {

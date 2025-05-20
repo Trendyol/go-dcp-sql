@@ -7,7 +7,6 @@ require (
 	github.com/json-iterator/go v1.1.12
 	github.com/prometheus/client_golang v1.20.5
 	github.com/sirupsen/logrus v1.9.3
-	github.com/stretchr/testify v1.9.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -45,11 +44,11 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.58.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.57.0 // indirect

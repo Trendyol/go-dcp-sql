@@ -13,7 +13,6 @@ type SQL struct {
 	DBName              string        `yaml:"dbName"`
 	SslMode             string        `yaml:"sslMode"`
 	DriverName          string        `yaml:"driverName"`
-	BatchSizeLimit      int           `yaml:"batchSizeLimit"`
 	BatchTickerDuration time.Duration `yaml:"batchTickerDuration"`
 	Port                uint16        `yaml:"port"`
 }
@@ -26,10 +25,6 @@ type Connector struct {
 func (c *Connector) ApplyDefaults() {
 	if c.SQL.SslMode == "" {
 		c.SQL.SslMode = "disable"
-	}
-
-	if c.SQL.BatchSizeLimit == 0 {
-		c.SQL.BatchSizeLimit = 1000
 	}
 
 	if c.SQL.BatchTickerDuration == 0 {

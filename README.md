@@ -60,7 +60,6 @@ Check out on [go-dcp](https://github.com/Trendyol/go-dcp#configuration)
 | `sql.sslMode`             | string        | no       | disable | Enabling SQL SSL mode                                                                              |
 | `sql.driverName`          | string        | yes      |         | Driver name                                                                                        |
 | `sql.port`                | int           | yes      |         | SQL port                                                                                           |
-| `sql.batchSizeLimit`      | int           | no       | 1000    | Maximum message count for batch, if exceed flush will be triggered                                 |
 | `sql.batchTickerDuration` | time.Duration | no       | 10s     | Batch is being flushed automatically at specific time intervals for long waiting messages in batch |
 
 ## Exposed metrics
