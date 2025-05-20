@@ -61,7 +61,7 @@ Check out on [go-dcp](https://github.com/Trendyol/go-dcp#configuration)
 | `sql.host`                | string        | yes      |         | SQL connection urls                                                                                |
 | `sql.user`                | string        | yes      |         | SQL username                                                                                       |
 | `sql.password`            | string        | yes      |         | SQL password                                                                                       |
-| `sql.dbName`              | string        | yes      | 1000    | SQL database name                                                                                  |
+| `sql.dbName`              | string        | yes      |         | SQL database name                                                                                  |
 | `sql.sslMode`             | string        | no       | disable | Enabling SQL SSL mode                                                                              |
 | `sql.driverName`          | string        | yes      |         | Driver name                                                                                        |
 | `sql.port`                | int           | yes      |         | SQL port                                                                                           |
