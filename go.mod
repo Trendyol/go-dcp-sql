@@ -2,6 +2,8 @@ module github.com/Trendyol/go-dcp-sql
 
 go 1.20
 
+replace github.com/Trendyol/go-dcp => ../go-dcp
+
 require (
 	github.com/Trendyol/go-dcp v1.2.6
 	github.com/json-iterator/go v1.1.12
