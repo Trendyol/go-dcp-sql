@@ -13,9 +13,11 @@ SQL tables in near real-time.
   Static, see [examples](https://github.com/Trendyol/go-dcp#examples)).
 * **Easily manageable configurations**.
 
-If you prefer to use the default mapper by entering the configuration information instead of creating a custom mapper, please refer to [this](#collection-table-mapping-configuration) topic.
-
 ## Example
+
+**Note:** If you prefer to use the default mapper by entering the configuration instead of creating a custom mapper, please refer to [this](#collection-table-mapping-configuration) topic.
+Otherwise, you can refer to the example provided below:
+
 ```go
 package main
 
@@ -39,7 +41,7 @@ func mapper(event couchbase.Event) []sql.Model {
 
 func main() {
   connector, err := dcpsql.NewConnectorBuilder("config.yml").
-    SetMapper(mapper).
+    SetMapper(mapper). // NOT NEEDED IF YOU'RE USING DEFAULT MAPPER. JUST CALL Build() FUNCTION
     Build()
   if err != nil {
     panic(err)
@@ -79,7 +81,7 @@ Collection table mapping configuration is optional. This configuration should on
 | `collectionTableMapping[].tableName`                  | string  | yes      |         | Target SQL table name                                                        |
 | `collectionTableMapping[].keyColumnName`              | string  | yes      |         | Column name for document key in SQL table                                    |
 | `collectionTableMapping[].valueColumnName`            | string  | yes      |         | Column name for document value in SQL table                                  |
-| `collectionTableMapping[].audit.enabled`              | bool    | no       | false   | Enable audit columns for tracking document changes                           |
+| `collectionTableMapping[].audit.enabled`              | bool    | no       |         | Enable audit columns for tracking document changes                           |
 | `collectionTableMapping[].audit.createdAtColumnName`  | string  | no       |         | Column name for tracking document creation time                              |
 | `collectionTableMapping[].audit.updatedAtColumnName`  | string  | no       |         | Column name for tracking document update time                                |
 
