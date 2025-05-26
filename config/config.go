@@ -26,12 +26,12 @@ type CollectionTableMapping struct {
 		Enabled             bool   `yaml:"enabled"`
 		CreatedAtColumnName string `yaml:"createdAtColumnName"`
 		UpdatedAtColumnName string `yaml:"updatedAtColumnName"`
-	} `yaml:"audit"`
+	} `yaml:"audit,omitempty"`
 }
 
 type Connector struct {
 	SQL                    SQL                      `yaml:"sql" mapstructure:"sql"`
-	CollectionTableMapping []CollectionTableMapping `yaml:"collectionTableMapping"`
+	CollectionTableMapping []CollectionTableMapping `yaml:"collectionTableMapping,omitempty"`
 	Dcp                    config.Dcp               `yaml:",inline" mapstructure:",squash"`
 }
 
