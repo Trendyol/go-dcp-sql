@@ -9,10 +9,12 @@ import (
 
 type Mapper func(event couchbase.Event) []sql.Model
 
-var collectionTableMapping *[]config.CollectionTableMapping
+var collectionTableMappings *[]config.CollectionTableMapping
+var mappingCache = make(map[string]config.CollectionTableMapping)
 
-func SetCollectionTableMapping(mapping *[]config.CollectionTableMapping) {
-	collectionTableMapping = mapping
+func SetCollectionTableMappings(mappings *[]config.CollectionTableMapping) {
+	collectionTableMappings = mappings
+	mappingCache = make(map[string]config.CollectionTableMapping)
 }
 
 func DefaultMapper(event couchbase.Event) []sql.Model {
@@ -27,14 +29,18 @@ func DefaultMapper(event couchbase.Event) []sql.Model {
 }
 
 func findCollectionTableMapping(collectionName string) config.CollectionTableMapping {
-	mapping := config.CollectionTableMapping{}
-	for _, tableMapping := range *collectionTableMapping {
-		if tableMapping.Collection == collectionName {
-			mapping = tableMapping
+	if mapping, exists := mappingCache[collectionName]; exists {
+		return mapping
+	}
+
+	for _, mapping := range *collectionTableMappings {
+		if mapping.Collection == collectionName {
+			mappingCache[collectionName] = mapping
+			return mapping
 		}
 	}
 
-	return mapping
+	panic(fmt.Sprintf("no mapping found for collection: %s", collectionName))
 }
 
 func buildUpsertQuery(mapping config.CollectionTableMapping, event couchbase.Event) sql.Raw {

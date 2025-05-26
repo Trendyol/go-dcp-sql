@@ -145,7 +145,7 @@ func newConnector(cf any, mapper Mapper) (Connector, error) {
 	metricCollector := metric.NewMetricCollector(connector.bulk)
 	dcp.SetMetricCollectors(metricCollector)
 
-	SetCollectionTableMapping(&cfg.CollectionTableMapping)
+	SetCollectionTableMappings(&cfg.CollectionTableMapping)
 
 	return connector, nil
 }
