@@ -2,6 +2,7 @@ package dcpsql
 
 import (
 	"fmt"
+
 	"github.com/Trendyol/go-dcp-sql/config"
 	"github.com/Trendyol/go-dcp-sql/couchbase"
 	"github.com/Trendyol/go-dcp-sql/sql"
@@ -9,8 +10,10 @@ import (
 
 type Mapper func(event couchbase.Event) []sql.Model
 
-var collectionTableMappings *[]config.CollectionTableMapping
-var mappingCache = make(map[string]config.CollectionTableMapping)
+var (
+	collectionTableMappings *[]config.CollectionTableMapping
+	mappingCache            = make(map[string]config.CollectionTableMapping)
+)
 
 func SetCollectionTableMappings(mappings *[]config.CollectionTableMapping) {
 	collectionTableMappings = mappings
