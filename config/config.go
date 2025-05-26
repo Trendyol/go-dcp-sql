@@ -17,9 +17,22 @@ type SQL struct {
 	Port                uint16        `yaml:"port"`
 }
 
+type CollectionTableMapping struct {
+	Collection      string `yaml:"collection"`
+	TableName       string `yaml:"tableName"`
+	KeyColumnName   string `yaml:"keyColumnName"`
+	ValueColumnName string `yaml:"valueColumnName"`
+	Audit           struct {
+		Enabled             bool   `yaml:"enabled"`
+		CreatedAtColumnName string `yaml:"createdAtColumnName"`
+		UpdatedAtColumnName string `yaml:"updatedAtColumnName"`
+	} `yaml:"audit"`
+}
+
 type Connector struct {
-	SQL SQL        `yaml:"sql" mapstructure:"sql"`
-	Dcp config.Dcp `yaml:",inline" mapstructure:",squash"`
+	SQL                    SQL                      `yaml:"sql" mapstructure:"sql"`
+	CollectionTableMapping []CollectionTableMapping `yaml:"collectionTableMapping"`
+	Dcp                    config.Dcp               `yaml:",inline" mapstructure:",squash"`
 }
 
 func (c *Connector) ApplyDefaults() {
