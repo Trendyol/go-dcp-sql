@@ -27,3 +27,12 @@ sql:
   port: 5432
   driverName: postgres
   sslMode: "disable"
+  collectionTableMapping:
+    - collection: _default
+      tableName: "public.example_table"
+      keyColumnName: id
+      valueColumnName: name
+      audit:
+        enabled: true
+        createdAtColumnName: created_at
+        updatedAtColumnName: updated_at

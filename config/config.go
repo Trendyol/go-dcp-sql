@@ -7,14 +7,14 @@ import (
 )
 
 type SQL struct {
-	Host                string        `yaml:"host"`
-	User                string        `yaml:"user"`
-	Password            string        `yaml:"password"`
-	DBName              string        `yaml:"dbName"`
-	SslMode             string        `yaml:"sslMode"`
-	DriverName          string        `yaml:"driverName"`
-	BatchTickerDuration time.Duration `yaml:"batchTickerDuration"`
-	Port                uint16        `yaml:"port"`
+	Host                   string                   `yaml:"host"`
+	User                   string                   `yaml:"user"`
+	Password               string                   `yaml:"password"`
+	DBName                 string                   `yaml:"dbName"`
+	SslMode                string                   `yaml:"sslMode"`
+	DriverName             string                   `yaml:"driverName"`
+	BatchTickerDuration    time.Duration            `yaml:"batchTickerDuration"`
+	Port                   uint16                   `yaml:"port"`
 	CollectionTableMapping []CollectionTableMapping `yaml:"collectionTableMapping,omitempty"`
 }
 
@@ -31,8 +31,8 @@ type CollectionTableMapping struct {
 }
 
 type Connector struct {
-	SQL                    SQL                      `yaml:"sql" mapstructure:"sql"`
-	Dcp                    config.Dcp               `yaml:",inline" mapstructure:",squash"`
+	SQL SQL        `yaml:"sql" mapstructure:"sql"`
+	Dcp config.Dcp `yaml:",inline" mapstructure:",squash"`
 }
 
 func (c *Connector) ApplyDefaults() {
