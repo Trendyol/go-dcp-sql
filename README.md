@@ -13,6 +13,8 @@ SQL tables in near real-time.
   Static, see [examples](https://github.com/Trendyol/go-dcp#examples)).
 * **Easily manageable configurations**.
 
+If you prefer to use the default mapper by entering the configuration information instead of creating a custom mapper, please refer to [this](#collection-table-mapping-configuration) topic.
+
 ## Example
 ```go
 package main
@@ -66,6 +68,20 @@ Check out on [go-dcp](https://github.com/Trendyol/go-dcp#configuration)
 | `sql.driverName`          | string        | yes      |         | Driver name                                                                                        |
 | `sql.port`                | int           | yes      |         | SQL port                                                                                           |
 | `sql.batchTickerDuration` | time.Duration | no       | 10s     | Batch is being flushed automatically at specific time intervals for long waiting messages in batch |
+
+### Collection Table Mapping Configuration
+
+Collection table mapping configuration is optional. This configuration should only be provided if you are using the default mapper. If you are implementing your own custom mapper function, this configuration is not needed.
+
+| Variable                                              | Type    | Required | Default | Description                                                                  |                                                           
+|-------------------------------------------------------|---------|----------|---------|------------------------------------------------------------------------------|
+| `collectionTableMapping[].collection`                 | string  | yes      |         | Couchbase collection name                                                    |
+| `collectionTableMapping[].tableName`                  | string  | yes      |         | Target SQL table name                                                        |
+| `collectionTableMapping[].keyColumnName`              | string  | yes      |         | Column name for document key in SQL table                                    |
+| `collectionTableMapping[].valueColumnName`            | string  | yes      |         | Column name for document value in SQL table                                  |
+| `collectionTableMapping[].audit.enabled`              | bool    | no       | false   | Enable audit columns for tracking document changes                           |
+| `collectionTableMapping[].audit.createdAtColumnName`  | string  | no       |         | Column name for tracking document creation time                              |
+| `collectionTableMapping[].audit.updatedAtColumnName`  | string  | no       |         | Column name for tracking document update time                                |
 
 ## Exposed metrics
 
