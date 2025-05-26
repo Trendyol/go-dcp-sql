@@ -17,12 +17,12 @@ sql:
   dbName: example
   port: 5432
   driverName: postgres
-collectionTableMapping:
-  - collection: _default
-    tableName: "public.example"
-    keyColumnName: id
-    valueColumnName: value
-    audit:
-      enabled: true
-      createdAtColumnName: created_at
-      updatedAtColumnName: updated_at
+  collectionTableMapping:
+    - collection: _default
+      tableName: "public.example"
+      keyColumnName: id
+      valueColumnName: value
+      audit:
+        enabled: true
+        createdAtColumnName: created_at
+        updatedAtColumnName: updated_at

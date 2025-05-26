@@ -60,16 +60,17 @@ Check out on [go-dcp](https://github.com/Trendyol/go-dcp#configuration)
 
 ### SQL Specific Configuration
 
-| Variable                  | Type          | Required | Default | Description                                                                                        |                                                           
-|---------------------------|---------------|----------|---------|----------------------------------------------------------------------------------------------------|
-| `sql.host`                | string        | yes      |         | SQL connection urls                                                                                |
-| `sql.user`                | string        | yes      |         | SQL username                                                                                       |
-| `sql.password`            | string        | yes      |         | SQL password                                                                                       |
-| `sql.dbName`              | string        | yes      |         | SQL database name                                                                                  |
-| `sql.sslMode`             | string        | no       | disable | Enabling SQL SSL mode                                                                              |
-| `sql.driverName`          | string        | yes      |         | Driver name                                                                                        |
-| `sql.port`                | int           | yes      |         | SQL port                                                                                           |
-| `sql.batchTickerDuration` | time.Duration | no       | 10s     | Batch is being flushed automatically at specific time intervals for long waiting messages in batch |
+| Variable                     | Type                     | Required | Default | Description                                                                                       |                                                           
+|------------------------------|--------------------------|----------|--------------------------------------------------------------------------------------------------------------|
+| `sql.host`                   | string                   | yes      |         | SQL connection urls                                                                                |
+| `sql.user`                   | string                   | yes      |         | SQL username                                                                                       |
+| `sql.password`               | string                   | yes      |         | SQL password                                                                                       |
+| `sql.dbName`                 | string                   | yes      |         | SQL database name                                                                                  |
+| `sql.sslMode`                | string                   | no       | disable | Enabling SQL SSL mode                                                                              |
+| `sql.driverName`             | string                   | yes      |         | Driver name                                                                                        |
+| `sql.port`                   | int                      | yes      |         | SQL port                                                                                           |
+| `sql.batchTickerDuration`    | time.Duration            | no       | 10s     | Batch is being flushed automatically at specific time intervals for long waiting messages in batch |
+| `sql.collectionTableMapping` | []CollectionTableMapping | no       | 10s     | Will be used for default mapper. Please read the next topic.                                       |
 
 ### Collection Table Mapping Configuration
 

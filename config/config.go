@@ -15,6 +15,7 @@ type SQL struct {
 	DriverName          string        `yaml:"driverName"`
 	BatchTickerDuration time.Duration `yaml:"batchTickerDuration"`
 	Port                uint16        `yaml:"port"`
+	CollectionTableMapping []CollectionTableMapping `yaml:"collectionTableMapping,omitempty"`
 }
 
 type CollectionTableMapping struct {
@@ -31,7 +32,6 @@ type CollectionTableMapping struct {
 
 type Connector struct {
 	SQL                    SQL                      `yaml:"sql" mapstructure:"sql"`
-	CollectionTableMapping []CollectionTableMapping `yaml:"collectionTableMapping,omitempty"`
 	Dcp                    config.Dcp               `yaml:",inline" mapstructure:",squash"`
 }
 
