@@ -3,22 +3,13 @@ hosts:
 username: user
 password: 123456
 bucketName: dcp-test
-rollbackMitigation:
-  disabled: true
-checkpoint:
-  type: manual
+logging:
+  level: info
 dcp:
   group:
     name: groupName
     membership:
       type: static
-metadata:
-  type: couchbase
-  readOnly: true
-  config:
-    bucket: dcp-test
-    scope: _default
-    collection: _default
 sql:
   host: localhost
   user: user
@@ -26,12 +17,11 @@ sql:
   dbName: example
   port: 5432
   driverName: postgres
-  sslMode: "disable"
   collectionTableMapping:
     - collection: _default
-      tableName: "public.example_table"
+      tableName: "public.example"
       keyColumnName: id
-      valueColumnName: name
+      valueColumnName: value
       audit:
         enabled: true
         createdAtColumnName: created_at

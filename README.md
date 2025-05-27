@@ -14,6 +14,10 @@ SQL tables in near real-time.
 * **Easily manageable configurations**.
 
 ## Example
+
+**Note:** If you prefer to use the default mapper by entering the configuration instead of creating a custom mapper, please refer to [this](#collection-table-mapping-configuration) topic.
+Otherwise, you can refer to the example provided below:
+
 ```go
 package main
 
@@ -37,7 +41,7 @@ func mapper(event couchbase.Event) []sql.Model {
 
 func main() {
   connector, err := dcpsql.NewConnectorBuilder("config.yml").
-    SetMapper(mapper).
+    SetMapper(mapper). // NOT NEEDED IF YOU'RE USING DEFAULT MAPPER. JUST CALL Build() FUNCTION
     Build()
   if err != nil {
     panic(err)
@@ -56,16 +60,31 @@ Check out on [go-dcp](https://github.com/Trendyol/go-dcp#configuration)
 
 ### SQL Specific Configuration
 
-| Variable                  | Type          | Required | Default | Description                                                                                        |                                                           
-|---------------------------|---------------|----------|---------|----------------------------------------------------------------------------------------------------|
-| `sql.host`                | string        | yes      |         | SQL connection urls                                                                                |
-| `sql.user`                | string        | yes      |         | SQL username                                                                                       |
-| `sql.password`            | string        | yes      |         | SQL password                                                                                       |
-| `sql.dbName`              | string        | yes      |         | SQL database name                                                                                  |
-| `sql.sslMode`             | string        | no       | disable | Enabling SQL SSL mode                                                                              |
-| `sql.driverName`          | string        | yes      |         | Driver name                                                                                        |
-| `sql.port`                | int           | yes      |         | SQL port                                                                                           |
-| `sql.batchTickerDuration` | time.Duration | no       | 10s     | Batch is being flushed automatically at specific time intervals for long waiting messages in batch |
+| Variable                     | Type                     | Required | Default | Description                                                                                       |                                                           
+|------------------------------|--------------------------|----------|--------------------------------------------------------------------------------------------------------------|
+| `sql.host`                   | string                   | yes      |         | SQL connection urls                                                                                |
+| `sql.user`                   | string                   | yes      |         | SQL username                                                                                       |
+| `sql.password`               | string                   | yes      |         | SQL password                                                                                       |
+| `sql.dbName`                 | string                   | yes      |         | SQL database name                                                                                  |
+| `sql.sslMode`                | string                   | no       | disable | Enabling SQL SSL mode                                                                              |
+| `sql.driverName`             | string                   | yes      |         | Driver name                                                                                        |
+| `sql.port`                   | int                      | yes      |         | SQL port                                                                                           |
+| `sql.batchTickerDuration`    | time.Duration            | no       | 10s     | Batch is being flushed automatically at specific time intervals for long waiting messages in batch |
+| `sql.collectionTableMapping` | []CollectionTableMapping | no       | 10s     | Will be used for default mapper. Please read the next topic.                                       |
+
+### Collection Table Mapping Configuration
+
+Collection table mapping configuration is optional. This configuration should only be provided if you are using the default mapper. If you are implementing your own custom mapper function, this configuration is not needed.
+
+| Variable                                              | Type    | Required | Default | Description                                                                  |                                                           
+|-------------------------------------------------------|---------|----------|---------|------------------------------------------------------------------------------|
+| `collectionTableMapping[].collection`                 | string  | yes      |         | Couchbase collection name                                                    |
+| `collectionTableMapping[].tableName`                  | string  | yes      |         | Target SQL table name                                                        |
+| `collectionTableMapping[].keyColumnName`              | string  | yes      |         | Column name for document key in SQL table                                    |
+| `collectionTableMapping[].valueColumnName`            | string  | yes      |         | Column name for document value in SQL table                                  |
+| `collectionTableMapping[].audit.enabled`              | bool    | no       |         | Enable audit columns for tracking document changes                           |
+| `collectionTableMapping[].audit.createdAtColumnName`  | string  | no       |         | Column name for tracking document creation time                              |
+| `collectionTableMapping[].audit.updatedAtColumnName`  | string  | no       |         | Column name for tracking document update time                                |
 
 ## Exposed metrics
 

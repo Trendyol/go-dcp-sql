@@ -2,12 +2,8 @@ package integration
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	dcpsql "github.com/Trendyol/go-dcp-sql"
 	"github.com/Trendyol/go-dcp-sql/config"
-	"github.com/Trendyol/go-dcp-sql/couchbase"
-	"github.com/Trendyol/go-dcp-sql/sql"
 	"github.com/Trendyol/go-dcp-sql/sql/client"
 	"github.com/Trendyol/go-dcp/logger"
 	_ "github.com/lib/pq"
@@ -20,27 +16,10 @@ type AirlineEvent struct {
 	name string
 }
 
-func Mapper(event couchbase.Event) []sql.Model {
-	var airlineEvent AirlineEvent
-	err := json.Unmarshal(event.Value, &airlineEvent)
-	if err != nil {
-		panic(err)
-	}
-	return []sql.Model{&sql.Raw{
-		Query: fmt.Sprintf(
-			"INSERT INTO example_table (id, name) VALUES ($1, $2);",
-		),
-		Args: []interface{}{
-			string(event.Key),
-			airlineEvent.name,
-		},
-	}}
-}
-
 func TestSql(t *testing.T) {
 	time.Sleep(time.Second * 30)
 
-	connector, err := dcpsql.NewConnectorBuilder("config.yml").SetMapper(Mapper).Build()
+	connector, err := dcpsql.NewConnectorBuilder("config.yml").Build()
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -64,6 +43,19 @@ func TestSql(t *testing.T) {
 			Port:       5432,
 			DriverName: "postgres",
 			SslMode:    "disable",
+			CollectionTableMapping: []config.CollectionTableMapping{
+				{
+					Collection:      "_default",
+					TableName:       "public.example_table",
+					KeyColumnName:   "id",
+					ValueColumnName: "name",
+					Audit: struct {
+						Enabled             bool   `yaml:"enabled"`
+						CreatedAtColumnName string `yaml:"createdAtColumnName"`
+						UpdatedAtColumnName string `yaml:"updatedAtColumnName"`
+					}{},
+				},
+			},
 		})
 		if err != nil {
 			t.Fatalf("could not open connection to sql %s", err)
