@@ -8,8 +8,6 @@ logging:
 dcp:
   group:
     name: groupName
-    membership:
-      type: static
 sql:
   host: localhost
   user: user
