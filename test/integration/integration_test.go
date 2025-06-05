@@ -16,7 +16,7 @@ type AirlineEvent struct {
 	name string
 }
 
-func TestSql(t *testing.T) {
+func TestDefaultMapper(t *testing.T) {
 	time.Sleep(time.Second * 30)
 
 	connector, err := dcpsql.NewConnectorBuilder("config.yml").Build()
