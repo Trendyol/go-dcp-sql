@@ -26,6 +26,10 @@ func DefaultMapper(event couchbase.Event) []sql.Model {
 		query := buildUpsertQuery(mapping, event)
 
 		return []sql.Model{&query}
+	} else if event.IsDeleted || event.IsExpired {
+		mapping := findCollectionTableMapping(event.CollectionName)
+		query := buildDeleteQuery(mapping, event)
+		return []sql.Model{&query}
 	}
 
 	return nil
@@ -89,4 +93,11 @@ func buildUpsertQuery(mapping config.CollectionTableMapping, event couchbase.Eve
 	}
 
 	return query
+}
+
+func buildDeleteQuery(mapping config.CollectionTableMapping, event couchbase.Event) sql.Raw {
+	return sql.Raw{
+		Query: fmt.Sprintf("DELETE FROM %s WHERE %s = $1", mapping.TableName, mapping.KeyColumnName),
+		Args:  []interface{}{string(event.Key)},
+	}
 }
