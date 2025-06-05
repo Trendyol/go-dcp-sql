@@ -1,6 +1,6 @@
 module integration-test-example
 
-go 1.20
+go 1.22
 
 replace github.com/Trendyol/go-dcp-sql => ../../.
 

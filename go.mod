@@ -1,6 +1,6 @@
 module github.com/Trendyol/go-dcp-sql
 
-go 1.20
+go 1.22
 
 require (
 	github.com/Trendyol/go-dcp v1.2.6
