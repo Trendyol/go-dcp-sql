@@ -26,7 +26,7 @@ func DefaultMapper(event couchbase.Event) []sql.Model {
 		query := buildUpsertQuery(mapping, event)
 
 		return []sql.Model{&query}
-	} else if (event.IsDeleted || event.IsExpired) {
+	} else if event.IsDeleted || event.IsExpired {
 		mapping := findCollectionTableMapping(event.CollectionName)
 		query := buildDeleteQuery(mapping, event)
 		return []sql.Model{&query}
