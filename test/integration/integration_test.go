@@ -16,7 +16,12 @@ type AirlineEvent struct {
 	name string
 }
 
-func TestDefaultMapperInsert(t *testing.T) {
+func TestDefaultMapper(t *testing.T) {
+	t.Run("TestDefaultMapperInsert", testDefaultMapperInsert)
+	t.Run("TestDefaultMapperDelete", testDefaultMapperDelete)
+}
+
+func testDefaultMapperInsert(t *testing.T) {
 	time.Sleep(time.Second * 30)
 
 	connector, err := dcpsql.NewConnectorBuilder("config.yml").Build()
@@ -88,7 +93,7 @@ func TestDefaultMapperInsert(t *testing.T) {
 	wg.Wait()
 }
 
-func TestDefaultMapperDelete(t *testing.T) {
+func testDefaultMapperDelete(t *testing.T) {
 	time.Sleep(time.Second * 30)
 
 	connector, err := dcpsql.NewConnectorBuilder("config.yml").Build()
