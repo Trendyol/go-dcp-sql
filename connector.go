@@ -53,14 +53,18 @@ func (c *connector) GetDcpClient() dcpCouchbase.Client {
 }
 
 func (c *connector) listener(ctx *models.ListenerContext) {
+	// Initialize ListenerTrace for current listen operation
+	listenerTrace := ctx.ListenerTracerComponent.InitializeListenerTrace("Listen", nil)
+	defer listenerTrace.Finish()
+
 	var e couchbase.Event
 	switch event := ctx.Event.(type) {
 	case models.DcpMutation:
-		e = couchbase.NewMutateEvent(event.Key, event.Value, event.CollectionName, event.EventTime, event.Cas, event.VbID)
+		e = couchbase.NewMutateEvent(listenerTrace, event.Key, event.Value, event.CollectionName, event.EventTime, event.Cas, event.VbID)
 	case models.DcpExpiration:
-		e = couchbase.NewExpireEvent(event.Key, nil, event.CollectionName, event.EventTime, event.Cas, event.VbID)
+		e = couchbase.NewExpireEvent(listenerTrace, event.Key, nil, event.CollectionName, event.EventTime, event.Cas, event.VbID)
 	case models.DcpDeletion:
-		e = couchbase.NewDeleteEvent(event.Key, nil, event.CollectionName, event.EventTime, event.Cas, event.VbID)
+		e = couchbase.NewDeleteEvent(listenerTrace, event.Key, nil, event.CollectionName, event.EventTime, event.Cas, event.VbID)
 	default:
 		return
 	}
