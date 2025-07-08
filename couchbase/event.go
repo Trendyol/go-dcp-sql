@@ -1,8 +1,12 @@
 package couchbase
 
-import "time"
+import (
+	"github.com/Trendyol/go-dcp/tracing"
+	"time"
+)
 
 type Event struct {
+	tracing.ListenerTrace
 	CollectionName string
 	EventTime      time.Time
 	Key            []byte
@@ -14,8 +18,9 @@ type Event struct {
 	IsMutated      bool
 }
 
-func NewDeleteEvent(key []byte, value []byte, collectionName string, eventTime time.Time, cas uint64, vbID uint16) Event {
+func NewDeleteEvent(listenerTrace tracing.ListenerTrace, key []byte, value []byte, collectionName string, eventTime time.Time, cas uint64, vbID uint16) Event {
 	return Event{
+		ListenerTrace:  listenerTrace,
 		Key:            key,
 		Value:          value,
 		IsDeleted:      true,
@@ -26,8 +31,9 @@ func NewDeleteEvent(key []byte, value []byte, collectionName string, eventTime t
 	}
 }
 
-func NewExpireEvent(key []byte, value []byte, collectionName string, eventTime time.Time, cas uint64, vbID uint16) Event {
+func NewExpireEvent(listenerTrace tracing.ListenerTrace, key []byte, value []byte, collectionName string, eventTime time.Time, cas uint64, vbID uint16) Event {
 	return Event{
+		ListenerTrace:  listenerTrace,
 		Key:            key,
 		Value:          value,
 		IsExpired:      true,
@@ -38,8 +44,9 @@ func NewExpireEvent(key []byte, value []byte, collectionName string, eventTime t
 	}
 }
 
-func NewMutateEvent(key []byte, value []byte, collectionName string, eventTime time.Time, cas uint64, vbID uint16) Event {
+func NewMutateEvent(listenerTrace tracing.ListenerTrace, key []byte, value []byte, collectionName string, eventTime time.Time, cas uint64, vbID uint16) Event {
 	return Event{
+		ListenerTrace:  listenerTrace,
 		Key:            key,
 		Value:          value,
 		IsMutated:      true,
