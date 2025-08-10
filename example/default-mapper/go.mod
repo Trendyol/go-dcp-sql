@@ -1,6 +1,8 @@
 module example
 
-go 1.20
+go 1.21
+
+toolchain go1.24.5
 
 replace github.com/Trendyol/go-dcp-sql => ./../..
 
