@@ -13,9 +13,9 @@ type SQL struct {
 	DBName                 string                   `yaml:"dbName"`
 	SslMode                string                   `yaml:"sslMode"`
 	DriverName             string                   `yaml:"driverName"`
+	CollectionTableMapping []CollectionTableMapping `yaml:"collectionTableMapping,omitempty"`
 	BatchTickerDuration    time.Duration            `yaml:"batchTickerDuration"`
 	Port                   uint16                   `yaml:"port"`
-	CollectionTableMapping []CollectionTableMapping `yaml:"collectionTableMapping,omitempty"`
 }
 
 type CollectionTableMapping struct {
@@ -24,9 +24,9 @@ type CollectionTableMapping struct {
 	KeyColumnName   string `yaml:"keyColumnName"`
 	ValueColumnName string `yaml:"valueColumnName"`
 	Audit           struct {
-		Enabled             bool   `yaml:"enabled"`
 		CreatedAtColumnName string `yaml:"createdAtColumnName"`
 		UpdatedAtColumnName string `yaml:"updatedAtColumnName"`
+		Enabled             bool   `yaml:"enabled"`
 	} `yaml:"audit,omitempty"`
 }
 

@@ -1,8 +1,9 @@
 package couchbase
 
 import (
-	"github.com/Trendyol/go-dcp/tracing"
 	"time"
+
+	"github.com/Trendyol/go-dcp/tracing"
 )
 
 type Event struct {
@@ -18,7 +19,10 @@ type Event struct {
 	IsMutated      bool
 }
 
-func NewDeleteEvent(listenerTrace tracing.ListenerTrace, key []byte, value []byte, collectionName string, eventTime time.Time, cas uint64, vbID uint16) Event {
+func NewDeleteEvent(listenerTrace tracing.ListenerTrace,
+	key []byte, value []byte,
+	collectionName string, eventTime time.Time, cas uint64, vbID uint16,
+) Event {
 	return Event{
 		ListenerTrace:  listenerTrace,
 		Key:            key,
@@ -31,7 +35,10 @@ func NewDeleteEvent(listenerTrace tracing.ListenerTrace, key []byte, value []byt
 	}
 }
 
-func NewExpireEvent(listenerTrace tracing.ListenerTrace, key []byte, value []byte, collectionName string, eventTime time.Time, cas uint64, vbID uint16) Event {
+func NewExpireEvent(listenerTrace tracing.ListenerTrace,
+	key []byte, value []byte,
+	collectionName string, eventTime time.Time, cas uint64, vbID uint16,
+) Event {
 	return Event{
 		ListenerTrace:  listenerTrace,
 		Key:            key,
@@ -44,7 +51,10 @@ func NewExpireEvent(listenerTrace tracing.ListenerTrace, key []byte, value []byt
 	}
 }
 
-func NewMutateEvent(listenerTrace tracing.ListenerTrace, key []byte, value []byte, collectionName string, eventTime time.Time, cas uint64, vbID uint16) Event {
+func NewMutateEvent(listenerTrace tracing.ListenerTrace,
+	key []byte, value []byte,
+	collectionName string, eventTime time.Time, cas uint64, vbID uint16,
+) Event {
 	return Event{
 		ListenerTrace:  listenerTrace,
 		Key:            key,

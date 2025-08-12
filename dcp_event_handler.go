@@ -5,7 +5,8 @@ import (
 )
 
 type DcpEventHandler struct {
-	bulk *bulk.Bulk
+	bulk     *bulk.Bulk
+	isFinite bool
 }
 
 func (h *DcpEventHandler) BeforeRebalanceStart() {
@@ -21,6 +22,9 @@ func (h *DcpEventHandler) AfterRebalanceEnd() {
 }
 
 func (h *DcpEventHandler) BeforeStreamStart() {
+	if h.isFinite {
+		return
+	}
 	h.bulk.PrepareEndRebalancing()
 }
 

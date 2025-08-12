@@ -143,7 +143,8 @@ func newConnector(cf any, mapper Mapper) (Connector, error) {
 
 	connector.dcp.SetEventHandler(
 		&DcpEventHandler{
-			bulk: connector.bulk,
+			isFinite: dcpConfig.IsDcpModeFinite(),
+			bulk:     connector.bulk,
 		})
 
 	metricCollector := metric.NewMetricCollector(connector.bulk)
