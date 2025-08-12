@@ -50,9 +50,9 @@ func TestSql(t *testing.T) {
 					KeyColumnName:   "id",
 					ValueColumnName: "name",
 					Audit: struct {
-						Enabled             bool   `yaml:"enabled"`
 						CreatedAtColumnName string `yaml:"createdAtColumnName"`
 						UpdatedAtColumnName string `yaml:"updatedAtColumnName"`
+						Enabled             bool   `yaml:"enabled"`
 					}{},
 				},
 			},
